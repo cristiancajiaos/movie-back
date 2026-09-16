@@ -26,7 +26,7 @@ export class MoviesService {
   }
 
   findAll() {
-    return `This action returns all movies`;
+    return this.movieRepository.find();
   }
 
   findOne(id: string) {
