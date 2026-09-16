@@ -1,9 +1,10 @@
-import { BadRequestException, Injectable, InternalServerErrorException } from '@nestjs/common';
+import { BadRequestException, Injectable, InternalServerErrorException, NotFoundException } from '@nestjs/common';
 import { CreateMovieDto } from './dto/create-movie.dto';
 import { UpdateMovieDto } from './dto/update-movie.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Movie } from './entities/movie.entity';
 import { Repository } from 'typeorm';
+import { validate as isUUID } from 'uuid';
 
 @Injectable()
 export class MoviesService {
@@ -29,8 +30,19 @@ export class MoviesService {
     return this.movieRepository.find();
   }
 
-  findOne(id: string) {
-    return `This action returns a #${id} movie`;
+  async findOne(id: string) {
+    if (isUUID(id)) {
+      const movie = await this.movieRepository.findOneBy({id: id});
+
+      if (!movie) {
+        throw new NotFoundException(`Movie with ID ${id} not found`);
+      }
+
+      return movie;
+    } else {
+      throw new BadRequestException(`ID given is not a UUID valid id`);
+    }
+    
   }
 
   update(id: string, updateMovieDto: UpdateMovieDto) {
