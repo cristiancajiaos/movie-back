@@ -49,8 +49,12 @@ export class MoviesService {
     return `This action updates a #${id} movie`;
   }
 
-  remove(id: string) {
-    return `This action removes a #${id} movie`;
+  async remove(id: string) {
+    const movie = this.findOne(id);
+    await this.movieRepository.delete({id: id});
+    return {
+      message: `Movie with ID ${id} deleted`
+    }
   }
 
   handleDBRequests(error) {
