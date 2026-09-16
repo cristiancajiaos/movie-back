@@ -1,7 +1,18 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, ParseUUIDPipe } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+  ParseUUIDPipe,
+  Query,
+} from '@nestjs/common';
 import { MoviesService } from './movies.service';
 import { CreateMovieDto } from './dto/create-movie.dto';
 import { UpdateMovieDto } from './dto/update-movie.dto';
+import { PaginationQueryDto } from 'src/common/dto/pagination-query-dto';
 
 @Controller('movies')
 export class MoviesController {
@@ -13,8 +24,8 @@ export class MoviesController {
   }
 
   @Get()
-  findAll() {
-    return this.moviesService.findAll();
+  findAll(@Query() paginationQueryDto: PaginationQueryDto) {
+    return this.moviesService.findAll(paginationQueryDto);
   }
 
   @Get(':id')
@@ -23,7 +34,10 @@ export class MoviesController {
   }
 
   @Patch(':id')
-  update(@Param('id', ParseUUIDPipe) id: string, @Body() updateMovieDto: UpdateMovieDto) {
+  update(
+    @Param('id', ParseUUIDPipe) id: string,
+    @Body() updateMovieDto: UpdateMovieDto,
+  ) {
     return this.moviesService.update(id, updateMovieDto);
   }
 

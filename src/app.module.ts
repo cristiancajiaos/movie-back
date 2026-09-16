@@ -4,6 +4,7 @@ import { AppService } from './app.service';
 import { ConfigModule  } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm'; 
 import { MoviesModule } from './movies/movies.module';
+import { CommonModule } from './common/common.module';
 
 @Module({
   imports: [
@@ -18,7 +19,8 @@ import { MoviesModule } from './movies/movies.module';
       autoLoadEntities: true,
       synchronize: true
     }),
-    MoviesModule
+    MoviesModule,
+    CommonModule
   ],
   controllers: [AppController],
   providers: [AppService],
