@@ -1,11 +1,28 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable, InternalServerErrorException } from '@nestjs/common';
 import { CreateMovieDto } from './dto/create-movie.dto';
 import { UpdateMovieDto } from './dto/update-movie.dto';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Movie } from './entities/movie.entity';
+import { Repository } from 'typeorm';
 
 @Injectable()
 export class MoviesService {
-  create(createMovieDto: CreateMovieDto) {
-    return 'This action adds a new movie';
+
+  constructor(
+    @InjectRepository(Movie)
+    private readonly movieRepository: Repository<Movie>
+  ) {
+
+  }
+  async create(createMovieDto: CreateMovieDto) {
+    try {
+      const movie = this.movieRepository.create(createMovieDto);
+      await this.movieRepository.save(movie);
+      return movie; 
+    } catch (error) {
+      this.handleDBRequests(error);
+    }
+    
   }
 
   findAll() {
@@ -22,5 +39,13 @@ export class MoviesService {
 
   remove(id: string) {
     return `This action removes a #${id} movie`;
+  }
+
+  handleDBRequests(error) {
+    if (error.code == '23505') {
+      throw new BadRequestException(error.detail);
+    }
+
+    throw new InternalServerErrorException(error.detail);
   }
 }
