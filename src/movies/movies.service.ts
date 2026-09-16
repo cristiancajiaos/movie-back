@@ -12,15 +12,15 @@ export class MoviesService {
     return `This action returns all movies`;
   }
 
-  findOne(id: number) {
+  findOne(id: string) {
     return `This action returns a #${id} movie`;
   }
 
-  update(id: number, updateMovieDto: UpdateMovieDto) {
+  update(id: string, updateMovieDto: UpdateMovieDto) {
     return `This action updates a #${id} movie`;
   }
 
-  remove(id: number) {
+  remove(id: string) {
     return `This action removes a #${id} movie`;
   }
 }
